@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useParams } from 'react-router-dom';
 import styled from 'styled-components';
 import { SInner } from './styles/inner';
+import { media } from './styles/media';
 
 import { useCart } from './providers/cart';
 
@@ -65,29 +66,50 @@ const SProductBox = styled.div`
 	display: flex;
 	justify-content: space-between;
 	align-items: flex-start;
+	${media.sp`
+		flex-direction: column;
+		align-items: center;
+	`}
 `;
 
 const SProductImg = styled.img`
 	width: 49%;
+	${media.sp`
+		width: 100%;
+	`}
 `;
 
 const SProductInfo = styled.div`
 	padding: 50px;
 	background-color: #fff;
 	width: 49%;
+	${media.sp`
+		padding: 20px;
+		width: 100%;
+		margin-top: 20px;
+	`}
 `;
 
 const SProductTtl = styled.h1`
 	font-size: 2.0rem;
+	${media.sp`
+		font-size: 1.6rem;
+	`}
 `;
 
 const SProductPrice = styled.p`
 	color: #e62b4f;
 	font-size: 5.0rem;
 	font-weight: 700;
+	${media.sp`
+		font-size: 2.8rem;
+	`}
 	.tax {
 		font-size: 30%;
 		margin-left: 2px;
+		${media.sp`
+			font-size: 40%;
+		`}
 	}
 `;
 
@@ -98,6 +120,10 @@ const SProductButton = styled.button`
 	border-radius: 0px;
 	color: #fff;
 	font-size: 1.8rem;
+	${media.sp`
+		padding: 8px 20px;
+		font-size: 1.5rem;
+	`}
 `;
 
 const SProductDescription = styled.p`

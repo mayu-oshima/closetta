@@ -1,5 +1,6 @@
 import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import { media } from './styles/media';
 
 const ThanksPage = () => {
   return(
@@ -24,6 +25,10 @@ const SThanksBox = styled.div`
   .message {
     font-size: 2.3rem;
     margin-bottom: 50px;
+    ${media.sp`
+      font-size: 1.8rem;
+      margin-bottom: 40px;
+    `}
   }
   .btn {
     padding: 10px;

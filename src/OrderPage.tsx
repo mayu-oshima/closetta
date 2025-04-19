@@ -1,6 +1,7 @@
 import {FormEvent} from 'react';
 
 import styled from 'styled-components';
+import { media } from './styles/media';
 import { SInner } from './styles/inner';
 
 import { useNavigate } from 'react-router-dom';
@@ -78,24 +79,38 @@ const OrderPage = () => {
 export default OrderPage;
 
 const SMainBox = styled.div`
-  padding: 40px 0;
+  ${media.sp`
+    
+  `}
 `;
 
 const PageTtl = styled.h1`
   font-size: 3.5rem;
   color: #fff;
   text-align: center;
+  margin-bottom: 50px;
+  ${media.sp`
+    font-size: 2.3rem;
+    margin-bottom: 30px;
+  `}
 `;
 
 const SCartBox = styled.form`
   display: flex;
   align-items: flex-start;
   color: #fff;
-  margin-top: 50px;
+  ${media.sp`
+    display: block;
+  `}
   .warp_content {
     flex: 1;
     .content {
-      margin-top: 70px;
+      &:nth-child(n+2) {
+        margin-top: 70px;
+        ${media.sp`
+          margin-top: 40px;
+        `}
+      }
     }
     .mini_ttl {
       font-size: 1.8rem;
@@ -103,6 +118,10 @@ const SCartBox = styled.form`
       margin-bottom: 50px;
       font-weight: 700;
       padding-bottom: 10px;
+      ${media.sp`
+        font-size: 1.6rem;
+        margin-bottom: 30px;
+      `}
     }
     .address {
       .item {
@@ -111,9 +130,17 @@ const SCartBox = styled.form`
         font-size: 1.6rem;
         &:nth-child(n+2) {
           margin-top: 40px;
+          ${media.sp`
+            margin-top: 23px;
+          `}
         }
         .ttl_item {
           width: 200px;
+          margin-right: 10px;
+          ${media.sp`
+            width: 80px;
+            margin-right: 5px;
+          `}
         }
         .input {
           flex: 1;
@@ -139,6 +166,18 @@ const SCartBox = styled.form`
         .name {
           flex: 1;
           margin-left: 20px;
+          font-size: 1.5rem;
+          ${media.sp`
+            margin-left: 15px;
+            font-size: 1.3rem;
+          `}
+        }
+        .price {
+          font-size: 1.5rem;
+          margin-left: 20px;
+          ${media.sp`
+            margin-left: 10px;
+          `}
         }
       }
     }
@@ -148,13 +187,21 @@ const SCartBox = styled.form`
     margin: 0 auto;
     border: 1px solid #555;
     margin-left: 60px;
+    ${media.sp`
+      padding: 20px;
+      margin-left: 0;
+      margin-top: 20px;
+    `}
     .box_total {
       display: flex;
       justify-content: space-between;
-      width: 260px;
       font-size: 2.0rem;
       font-weight: 700;
       margin-bottom: 20px;
+      ${media.sp`
+        font-size: 1.8rem;
+        margin-bottom: 15px;
+      `}
       .tax {
         font-size: 60%;
         margin-left: 5px;

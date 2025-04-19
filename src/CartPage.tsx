@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { media } from './styles/media';
 import { SInner } from './styles/inner';
 
 import { Link } from 'react-router-dom';
@@ -70,6 +71,9 @@ export default CartPage;
 
 const SMainBox = styled.div`
   padding: 40px 0;
+  ${media.sp`
+    padding: 20px 0;
+  `}
 `;
 
 const PageTtl = styled.h1`
@@ -77,13 +81,19 @@ const PageTtl = styled.h1`
   color: #fff;
   text-align: center;
   margin-bottom: 70px;
+  ${media.sp`
+    font-size: 2.5rem;
+    margin-bottom: 40px;
+  `}
 `;
 
 const SCartBox = styled.div`
   display: flex;
   align-items: flex-start;
   color: #fff;
-  margin-top: 50px;
+  ${media.sp`
+    display: block;
+  `}
   .warp_ul_cart {
     flex: 1;
     .ul_cart {
@@ -99,19 +109,33 @@ const SCartBox = styled.div`
         }
         .img {
           width: 200px;
+          ${media.sp`
+            width: 100px;
+          `}
         }
         .name {
           flex: 1;
           margin-left: 20px;
           font-size: 1.8rem;
+          ${media.sp`
+            font-size: 1.4rem;
+            margin-left: 10px;
+          `}
         }
         .quantity {
+          margin-left: 25px;
+          ${media.sp`
+            margin-left: 10px;
+          `}
           .sele_quantity {
             padding: 5px;
           }
           .delete_btn {
             color: #fff;
             margin-left: 20px;
+            ${media.sp`
+              margin-left: 10px;
+            `}
           }
         }
       }
@@ -121,11 +145,17 @@ const SCartBox = styled.div`
       justify-content: flex-end;
       border-top: 1px solid #555;
       padding-top: 40px;
+      ${media.sp`
+        padding-top: 20px;
+      `}
       .box_total {
         display: flex;
         justify-content: space-between;
         width: 260px;
         font-size: 1.8rem;
+        ${media.sp`
+          font-size: 1.8rem;
+        `}
       }
     }
   }
@@ -134,6 +164,11 @@ const SCartBox = styled.div`
     margin: 0 auto;
     border: 1px solid #555;
     margin-left: 60px;
+    ${media.sp`
+      padding: 30px;
+      margin-left: 0;
+      margin-top: 40px;
+    `}
     .btn {
       padding: 10px;
       border: none;
@@ -163,6 +198,10 @@ const SEmptyBox = styled.div`
   .message {
     font-size: 2.3rem;
     margin-bottom: 50px;
+    ${media.sp`
+      font-size: 1.8rem;
+      margin-bottom: 40px;
+    `}
   }
   .btn {
     padding: 10px;
@@ -173,5 +212,9 @@ const SEmptyBox = styled.div`
     color: #000;
     text-decoration: none;
     min-width: 270px;
+    ${media.sp`
+      font-size: 1.5rem;
+      min-width: 270px;
+    `}
   }
 `;

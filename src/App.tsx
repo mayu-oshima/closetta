@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled, {createGlobalStyle} from 'styled-components';
+import { media } from './styles/media';
 
 //ユーザー情報
 import { onAuthStateChanged, signOut, User } from 'firebase/auth';
@@ -58,6 +59,7 @@ const GlobalStyle = createGlobalStyle`
     background-color: #0f0f0e;
     line-height: 1.7;
     letter-spacing: .03em;
+    margin: 0;
     * {
       box-sizing: border-box;
       margin: 0;
@@ -82,5 +84,8 @@ const GlobalStyle = createGlobalStyle`
 `;
 
 const SMain = styled.main`
-  padding-top: 80px;
+  padding: 80px 0;
+  ${media.sp`
+    padding: 60px 0;
+  `}
 `;

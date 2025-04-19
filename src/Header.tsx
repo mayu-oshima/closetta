@@ -1,4 +1,5 @@
 import styled from 'styled-components';
+import { media } from './styles/media';
 import { SInner } from './styles/inner';
 import { Link, useLocation } from 'react-router-dom';
 import { signOut, User } from 'firebase/auth';
@@ -25,7 +26,7 @@ export const Header = () => {
           <div className='info'>
             {user ? (
               <>
-                <p>{user.email}様</p>
+                <p className='user_name'>{user.email}様</p>
                 <button className='btn' onClick={logOut}>ログアウト</button>
               </>
             ) : (
@@ -43,7 +44,6 @@ export const Header = () => {
 };
 
 const Sheader = styled.header`
-  padding: 15px;
   position: fixed;
   z-index: 999;
   top: 0;
@@ -60,6 +60,11 @@ const SHeaderBox = styled.div`
   .logo {
     width: 150px;
     height: auto;
+    padding: 15px 0;
+    ${media.sp`
+      width: 120px;
+      padding: 10px 0;
+    `}
     img {
       width: 100%;
     }
@@ -71,8 +76,19 @@ const SHeaderBox = styled.div`
     margin-left: 20px;
     text-decoration: none;
     cursor: pointer;
+    padding: 15px 0;
+    ${media.sp`
+      font-size: 1.3rem;
+      margin-left: 10px;
+      padding: 10px 0;
+    `}
   }
   .info {
     display: flex;
+    .user_name {
+      ${media.sp`
+        display: none;
+      `}
+    }
   }
 `;

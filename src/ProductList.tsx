@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import styled from 'styled-components';
+import { media } from './styles/media';
 import axios from 'axios';
 import { Link } from 'react-router-dom';
 import { SInner } from './styles/inner';
@@ -57,9 +58,18 @@ const SListProducts = styled.ul`
     width: 24%;
     list-style-type: none;
     text-decoration: none;
+    ${media.sp`
+      width: 48.5%;
+    `}
     &:nth-child(n + 5) {
       margin-top: 40px;
     }
+    ${media.sp`
+      &:nth-child(n+3) {
+        margin-top: 20px;
+      }
+    `}
+    
   }
 `;
 
@@ -70,6 +80,9 @@ const SroductLink = styled(Link)`
 
 const SProductName = styled.h3`
   font-size: 2.5rem;
+  ${media.sp`
+    font-size: 1.8rem;
+  `}
 `;
 
 const SProductImg = styled.img`
@@ -77,9 +90,14 @@ const SProductImg = styled.img`
 `;
 
 const SProductCategory = styled.p`
-  
+  ${media.sp`
+    font-size: 1.4rem;
+  `}
 `;
 
 const SProductPrice = styled.p`
   font-size: 2.0rem;
+  ${media.sp`
+    font-size: 1.8rem;
+  `}
 `;
