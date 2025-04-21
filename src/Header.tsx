@@ -5,8 +5,24 @@ import { Link, useLocation } from 'react-router-dom';
 import { signOut, User } from 'firebase/auth';
 import { useUser } from './providers/user';
 import { auth } from './firebase';
+import { useCart } from './providers/cart';
 
 export const Header = () => {
+  const { cartItems } = useCart();
+  const cartNum = () => {
+    let num: number = 0;
+    cartItems.map(item => {
+      num += item.quantity;
+    })
+    let result: string = '';
+    if(num > 9) {
+      result = '9+';
+    } else {
+      result = String(num);
+    }
+    return result;
+  }
+
   const user: User | null = useUser();
 
   const location = useLocation();
@@ -35,7 +51,12 @@ export const Header = () => {
                 <Link to={'/login/'} state={{ from: location }} className='btn'>ログイン</Link>
               </>
             )}
-            <Link className='btn' to={'/cart/'}>カート</Link>
+            <Link className='btn' to={'/cart/'}>
+              <div className='cart'>
+                <p className='num'>{cartNum()}</p>
+                <img src='/images/icon_cart.png'/>
+              </div>
+            </Link>
           </div>
         </SHeaderBox>
       </SInner>
@@ -82,9 +103,32 @@ const SHeaderBox = styled.div`
       margin-left: 10px;
       padding: 10px 0;
     `}
+    .cart {
+      width: 25px;
+      position: relative;
+      .num {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        width: 13px;
+        height: 13px;
+        background-color: #ff0e0e;
+        border-radius: 50%;
+        font-weight: 700;
+        font-size: 1.0rem;
+        position: absolute;
+        top: -1px;
+        left: 3px;
+        letter-spacing: -.09em;
+      }
+      img {
+        width: 100%;
+      }
+    }
   }
   .info {
     display: flex;
+    align-items: center;
     .user_name {
       ${media.sp`
         display: none;
