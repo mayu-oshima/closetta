@@ -222,6 +222,7 @@ const SPopup = styled.div<{popup: boolean}>`
 			display: flex;
 			justify-content: center;
 			align-items: center;
+			color: #222;
 		}
 	}
 `;
