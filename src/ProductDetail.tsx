@@ -167,7 +167,6 @@ const SPopup = styled.div<{popup: boolean}>`
 		max-width: 400px;
 		bottom: 10px;
 		left: 50%;
-		translate: -50% 0;
 		translate: ${props => (props.popup ? '-50% 0' : '-50% calc(100% + 60px)')};
 	}
 	.btn_close {
@@ -223,6 +222,7 @@ const SPopup = styled.div<{popup: boolean}>`
 			justify-content: center;
 			align-items: center;
 			color: #222;
+			font-size: 1.4rem;
 		}
 	}
 `;
