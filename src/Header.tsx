@@ -35,7 +35,7 @@ export const Header = () => {
   return (
     <Sheader>
       <SInner>
-        <SHeaderBox>
+        <SHeaderBox cartNum={cartNum()}>
           <Link to={'/'} className='logo'>
             <img src="/images/closetta_logo.png" alt="" />
           </Link>
@@ -74,7 +74,7 @@ const Sheader = styled.header`
   color: #fff;
 `;
 
-const SHeaderBox = styled.div`
+const SHeaderBox = styled.div<{cartNum: string}>`
   display: flex;
   justify-content: space-between;
   align-items: center;
@@ -120,6 +120,8 @@ const SHeaderBox = styled.div`
         top: -1px;
         left: 3px;
         letter-spacing: -.09em;
+        transition: all .3s ease;
+        scale: ${props => props.cartNum !== '0' ? '1' : '0'};
       }
       img {
         width: 100%;
