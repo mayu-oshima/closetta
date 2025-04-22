@@ -60,6 +60,9 @@ const GlobalStyle = createGlobalStyle`
     line-height: 1.7;
     letter-spacing: .03em;
     margin: 0;
+    ${media.sp`
+      font-size: 1.4rem;
+    `}
     * {
       box-sizing: border-box;
       margin: 0;
@@ -80,7 +83,30 @@ const GlobalStyle = createGlobalStyle`
         opacity: .6;
       }
     }
+    input {
+      border: none;
+      &[type="text"] {
+        padding: 5px;
+      }
+      &[type="radio"] {
+        scale: 1.5;
+      }
+    }
+    select {
+      border: none;
+      padding: 5px;
+    }
   }
+  ${media.pc`
+    ._pc-none {
+      display: none;
+      }
+  `}
+  ${media.sp`
+    ._sp-none {
+      display: none;
+      }
+  `}
 `;
 
 const SMain = styled.main`

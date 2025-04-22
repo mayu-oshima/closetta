@@ -1,4 +1,4 @@
-import {FormEvent} from 'react';
+import {useState, FormEvent} from 'react';
 
 import styled from 'styled-components';
 import { media } from './styles/media';
@@ -7,6 +7,7 @@ import { SInner } from './styles/inner';
 import { useNavigate } from 'react-router-dom';
 
 import { useCart } from './providers/cart';
+
 
 const OrderPage = () => {
   const { cartItems, total, clearCart } = useCart();
@@ -18,9 +19,11 @@ const OrderPage = () => {
     navigate('/thanks/');
   }
 
+  const [paymentSelect, setPaymentSelect] = useState('');
+
   return(
     <SMainBox>
-      <PageTtl>お届け先入力・注文内容の確認</PageTtl>
+      <PageTtl>お届け先 / お支払い方法入力・<br className='_pc-none'/>注文内容の確認</PageTtl>
       <SInner>
         <SCartBox onSubmit={handleSubmit}>
           <div className='warp_content'>
@@ -43,6 +46,116 @@ const OrderPage = () => {
                   <span className='ttl_item'>電話番号</span>
                   <input className='input' type="text" name='phone' required/>
                 </label>
+              </div>
+            </div>
+            <div className='content'>
+              <h2 className='mini_ttl'>お支払い方法</h2>
+              <div className='payment'>
+                <div className='item'>
+                  <label className='label'>
+                    <input className='input_radio' type="radio" name='payment' value="credit" onChange={e => setPaymentSelect(e.target.value)}/>
+                    <span className='ttl_item'>クレジットカード</span>
+                  </label>
+                  <SSubBox open={'credit' === paymentSelect}>
+                    <div className='box credit'>
+                      <label className='sub_item'>
+                        <span className='sub_ttl_item'>カード番号</span>
+                        <input className='sub_input' type="text" name='credit_num'/>
+                      </label>
+                      <label className='sub_item'>
+                        <span className='sub_ttl_item'>セキュリティコード</span>
+                        <input className='sub_input' type="text" name='security_code'/>
+                      </label>
+                      <label className='sub_item'>
+                        <span className='sub_ttl_item'>有効期限</span>
+                        <div className='sub_input expiry'>
+                          <div className='item_expiry'>
+                            <select className='expiry_select' name="expiry_month">
+                              <option value="01">01</option>
+                              <option value="02">02</option>
+                              <option value="03">03</option>
+                              <option value="04">04</option>
+                              <option value="05">05</option>
+                              <option value="06">06</option>
+                              <option value="07">07</option>
+                              <option value="08">08</option>
+                              <option value="09">09</option>
+                              <option value="10">10</option>
+                              <option value="11">11</option>
+                              <option value="12">12</option>
+                            </select>
+                            <span className="unit">月</span>
+                          </div>
+                          <div className='item_expiry'>
+                            <select className='expiry_select' name="expiry_year">
+                              <option value="25">25</option>
+                              <option value="26">26</option>
+                              <option value="27">27</option>
+                              <option value="28">28</option>
+                              <option value="29">29</option>
+                              <option value="30">30</option>
+                              <option value="31">31</option>
+                              <option value="32">32</option>
+                              <option value="33">33</option>
+                              <option value="34">34</option>
+                              <option value="35">35</option>
+                            </select>
+                            <span className="unit">年</span>
+                          </div>
+                        </div>
+                      </label>
+                      <label className='sub_item'>
+                        <span className='sub_ttl_item'>支払い回数</span>
+                        <select className='sub_input' name="times">
+                          <option value="">一括払い</option>
+                          <option value="">2回払い</option>
+                          <option value="">3回払い</option>
+                          <option value="">6回払い</option>
+                          <option value="">12回払い</option>
+                          <option value="">24回払い</option>
+                          <option value="">リボ払い</option>
+                          <option value="">ボーナス払い</option>
+                        </select>
+                      </label>
+                    </div>
+                  </SSubBox>
+                </div>
+                <div className='item'>
+                  <label className='label'>
+                    <input className='input_radio' type="radio" name='payment' value="delivery" onChange={e => setPaymentSelect(e.target.value)}/>
+                    <span className='ttl_item'>代金引換<span className='small'>（手数料：¥330）</span></span>
+                  </label>
+                </div>
+                <div className='item'>
+                  <label className='label'>
+                    <input className='input_radio' type="radio" name='payment' value="conveni" onChange={e => setPaymentSelect(e.target.value)}/>
+                    <span className='ttl_item'>コンビニ<span className='small'>（手数料：¥330）</span></span>
+                  </label>
+                  <SSubBox open={'conveni' === paymentSelect}>
+                    <div className='box conveni'>
+                      <label className='sub_item'>
+                        <input className='input_radio' type="radio" value='lawson' name='conveni'/>
+                        <span className='sub_ttl_item'>ローソン</span>
+                      </label>
+                      <label className='sub_item'>
+                        <input className='input_radio' type="radio" value='familyM' name='conveni'/>
+                        <span className='sub_ttl_item'>ファミリーマート</span>
+                      </label>
+                      <label className='sub_item'>
+                        <input className='input_radio' type="radio" value='ministop' name='conveni'/>
+                        <span className='sub_ttl_item'>ミニストップ</span>
+                      </label>
+                      <label className='sub_item'>
+                        <input className='input_radio' type="radio" value='daily' name='conveni'/>
+                        <span className='sub_ttl_item'>デイリーヤマザキ</span>
+                      </label>
+                      <label className='sub_item'>
+                        <input className='input_radio' type="radio" value='7eleven' name='conveni'/>
+                        <span className='sub_ttl_item'>セブンイレブン</span>
+                      </label>
+                    </div>
+                  </SSubBox>
+                </div>
               </div>
             </div>
             <div className='content'>
@@ -102,6 +215,9 @@ const SCartBox = styled.form`
   ${media.sp`
     display: block;
   `}
+  .input_radio {
+    margin-right: 13px;
+  }
   .warp_content {
     flex: 1;
     .content {
@@ -146,6 +262,23 @@ const SCartBox = styled.form`
           flex: 1;
           padding: 5px;
 
+        }
+      }
+    }
+    .payment {
+      .item {
+        &:nth-child(n+2) {
+          margin-top: 20px;
+        }
+        .label {
+          display: flex;
+          align-items: center;
+        }
+        .ttl_item {
+          flex: 1;
+          .small {
+            font-size: 70%;
+          }
         }
       }
     }
@@ -231,3 +364,59 @@ const SCartBox = styled.form`
   }
 `;
 
+const SSubBox = styled.div<{open: boolean}>`
+  transition: all .4s ease;
+  max-height: ${props => props.open ? '1000px' : '0'};
+  opacity: ${props => props.open ? '1' : '0'};
+  overflow: hidden;
+  .box {
+    background-color: #555;
+    padding: 30px;
+    margin-top: 15px;
+    ${media.sp`
+      padding: 15px;
+      font-size: 1.3rem;
+    `}
+    .sub_item {
+      display: flex;
+      align-items: center;
+      &:nth-child(n+2) {
+        margin-top: 30px;
+        ${media.sp`
+          margin-top: 15px;
+        `}
+      }
+    }
+    &.credit {
+      .sub_ttl_item {
+        width: 170px;
+        margin-right: 10px;
+        ${media.sp`
+          width: 100px;
+          margin-right: 5px;
+        `}
+      }
+      .sub_input {
+        flex: 1;
+        &.expiry {
+          display: flex;
+          justify-content: space-between;
+          .item_expiry {
+            width: 48.5%;
+            display: flex;
+            align-items: center;
+            .expiry_select {
+              flex: 1;
+            }
+            .unit {
+              margin-left: 7px;
+            }
+          }
+        }
+      }
+    }
+    &.conveni {
+
+    }
+  }
+`;
