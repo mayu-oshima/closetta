@@ -14,7 +14,8 @@ import { ProductDetail } from './ProductDetail';
 import SignupPage from './Signup';
 import LoginPage from './Login';
 import CartPage from './CartPage';
-import OrderPage from './OrderPage';
+import SelectPage from './order/SelectPage';
+import ConfirmPage from './order/ConfirmPage';
 import ThanksPage from './ThanksPage';
 
 //パーツのインポート
@@ -38,7 +39,8 @@ export const App = () => {
               <Route path='/signup/' element={<SignupPage/>}/>
               <Route path='/login/' element={<LoginPage/>}/>
               <Route path='/cart/' element={<CartPage/>}/>
-              <Route path='/order/' element={<OrderPage/>}/>
+              <Route path='/order/select.html' element={<SelectPage/>}/>
+              <Route path='/order/confirm.html' element={<ConfirmPage/>}/>
               <Route path='/thanks/' element={<ThanksPage/>}/>
             </Routes>
           </SMain>

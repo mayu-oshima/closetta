@@ -50,7 +50,7 @@ const { cartItems, removeFromCart, updateQuantity, total } = useCart();
                 </div>
               </div>
               <div className='tocash'>
-                <Link className='btn' to={'/order/'}>レジへ進む</Link>
+                <Link className='btn' to={'/order/select.html'}>レジへ進む</Link>
                 <div className='continue'>
                   <Link to={'/'}>ショッピングを続ける</Link>
                 </div>

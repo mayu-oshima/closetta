@@ -1,29 +1,67 @@
 import {useState, FormEvent} from 'react';
 
 import styled from 'styled-components';
-import { media } from './styles/media';
-import { SInner } from './styles/inner';
+import { media } from '../styles/media';
+import { SInner } from '../styles/inner';
 
 import { useNavigate } from 'react-router-dom';
 
-import { useCart } from './providers/cart';
+import { useCart } from '../providers/cart';
+
+import { auth, db } from '../firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 
-const OrderPage = () => {
-  const { cartItems, total, clearCart } = useCart();
+const SelectPage = () => {
+  const { cartItems, total } = useCart();
   const navigate = useNavigate();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    clearCart();
-    navigate('/thanks/');
+
+    if(!paymentSelect) {
+      alert('お支払い方法を選択してください');
+      return;
+    }
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name'),
+      postal: formData.get('postal'),
+      address: formData.get('address'),
+      phone: formData.get('phone'),
+      payment: paymentSelect,
+      credit: {
+        credit_num: formData.get('credit_num'),
+        security_code: formData.get('security_code'),
+        expiry_month: formData.get('expiry_month'),
+        expiry_year: formData.get('expiry_year'),
+        times: formData.get('times'),
+      },
+      conveni: formData.get('conveni'),
+      timestamp: serverTimestamp(),
+    };
+
+    const user = auth.currentUser;
+    if(!user) {
+      alert('ログインしていません');
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'users', user.uid, 'orders'), data);
+    } catch (error) {
+      console.log('データの保存に失敗しました：' + error);
+    }
+
+    navigate('/order/confirm.html');
   }
 
   const [paymentSelect, setPaymentSelect] = useState('');
 
   return(
     <SMainBox>
-      <PageTtl>お届け先 / お支払い方法入力・<br className='_pc-none'/>注文内容の確認</PageTtl>
+      <PageTtl>お届け先・お支払い方法</PageTtl>
       <SInner>
         <SCartBox onSubmit={handleSubmit}>
           <div className='warp_content'>
@@ -158,30 +196,13 @@ const OrderPage = () => {
                 </div>
               </div>
             </div>
-            <div className='content'>
-              <h2 className='mini_ttl'>購入商品</h2>
-              <ul className='ul_cart'>
-                {cartItems.map(item => (
-                  <li key={item.id}>
-                    <img className='img' src={item.image} alt={item.name} />
-                    <div className='name'>
-                      <p>{item.name}</p>
-                      <p>数量：{item.quantity}</p>
-                    </div>
-                    <p className='price'>
-                    <p>¥{item.price}</p>
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
           <div className='confirm'>
             <div className='box_total'>
               <p>商品合計<span className='tax'>税込</span></p>
               <p>¥{total}</p>
             </div>
-            <button className='btn' type='submit'>注文を確定する</button>
+            <button className='btn' type='submit'>次へ進む</button>
           </div>
         </SCartBox>
       </SInner>
@@ -189,7 +210,7 @@ const OrderPage = () => {
   );
 }
 
-export default OrderPage;
+export default SelectPage;
 
 const SMainBox = styled.div`
   ${media.sp`
