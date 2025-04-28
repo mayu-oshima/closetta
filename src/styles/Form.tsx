@@ -58,6 +58,7 @@ export const SFormBox = styled.div`
     font-size: 1.6rem;
     width: 100%;
     background-color: #ddd;
+    color: #000;
     ${media.sp`
       margin-top: 20px;
     `}

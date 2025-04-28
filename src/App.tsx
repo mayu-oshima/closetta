@@ -1,12 +1,9 @@
-import { useEffect, useState } from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import styled, {createGlobalStyle} from 'styled-components';
 import { media } from './styles/media';
 
 //ユーザー情報
-import { onAuthStateChanged, signOut, User } from 'firebase/auth';
-import { auth } from './firebase';
-import { UserProvider, useUser } from './providers/user';
+import { UserProvider } from './providers/user';
 
 //ページのインポート
 import { ProductList } from './ProductList';
@@ -14,7 +11,8 @@ import { ProductDetail } from './ProductDetail';
 import SignupPage from './Signup';
 import LoginPage from './Login';
 import CartPage from './CartPage';
-import OrderPage from './OrderPage';
+import SelectPage from './order/SelectPage';
+import ConfirmPage from './order/ConfirmPage';
 import ThanksPage from './ThanksPage';
 
 //パーツのインポート
@@ -38,7 +36,8 @@ export const App = () => {
               <Route path='/signup/' element={<SignupPage/>}/>
               <Route path='/login/' element={<LoginPage/>}/>
               <Route path='/cart/' element={<CartPage/>}/>
-              <Route path='/order/' element={<OrderPage/>}/>
+              <Route path='/order/select.html' element={<SelectPage/>}/>
+              <Route path='/order/confirm.html' element={<ConfirmPage/>}/>
               <Route path='/thanks/' element={<ThanksPage/>}/>
             </Routes>
           </SMain>
@@ -79,22 +78,28 @@ const GlobalStyle = createGlobalStyle`
     }
     a {
       transition: all .4s ease;
-      &:hover {
-        opacity: .6;
-      }
+      ${media.pc`
+        &:hover {
+          opacity: .6;
+        }
+      `}
     }
     input {
       border: none;
-      &[type="text"] {
+      font-size: 1.5rem;
+      &[type="text"], &[type="email"], &[type="password"] {
         padding: 5px;
+        border-radius: 0;
       }
       &[type="radio"] {
         scale: 1.5;
       }
     }
     select {
+      font-size: 1.5rem;
       border: none;
       padding: 5px;
+      border-radius: 0;
     }
   }
   ${media.pc`

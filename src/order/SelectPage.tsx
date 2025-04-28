@@ -1,29 +1,110 @@
-import {useState, FormEvent} from 'react';
+import {useState, FormEvent, useEffect} from 'react';
 
 import styled from 'styled-components';
-import { media } from './styles/media';
-import { SInner } from './styles/inner';
+import { media } from '../styles/media';
+import { SInner } from '../styles/inner';
 
 import { useNavigate } from 'react-router-dom';
 
-import { useCart } from './providers/cart';
+import { useCart } from '../providers/cart';
+import { useUser } from '../providers/user';
+
+import { auth, db } from '../firebase';
+import { collection, addDoc, serverTimestamp, FieldValue } from 'firebase/firestore';
 
 
-const OrderPage = () => {
-  const { cartItems, total, clearCart } = useCart();
+const SelectPage = () => {
+  const { total } = useCart();
+  const { latestOrder, setLatestOrder } = useUser();
+  
   const navigate = useNavigate();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async(e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    clearCart();
-    navigate('/thanks/');
+
+    if(!userData.payment) {
+      alert('お支払い方法を選択してください');
+      return;
+    }
+
+    const formData = new FormData(e.currentTarget);
+    const data = {
+      name: formData.get('name') as string,
+      postal: formData.get('postal') as string,
+      address: formData.get('address') as string,
+      phone: formData.get('phone') as string,
+      payment: userData.payment as string,
+      credit: {
+        credit_num: formData.get('credit_num') as string,
+        security_code: formData.get('security_code') as string,
+        expiry_month: formData.get('expiry_month') as string,
+        expiry_year: formData.get('expiry_year') as string,
+        times: formData.get('times') as string,
+      },
+      conveni: formData.get('conveni') as string,
+      timestamp: serverTimestamp(),
+    };
+
+    const user = auth.currentUser;
+    if(!user) {
+      alert('ログインしていません');
+      return;
+    }
+
+    try {
+      await addDoc(collection(db, 'users', user.uid, 'orders'), data);
+      setLatestOrder(data);
+    } catch (error) {
+      console.log('データの保存に失敗しました：' + error);
+    }
+
+    navigate('/order/confirm.html');
   }
 
-  const [paymentSelect, setPaymentSelect] = useState('');
+  type userDataType = {
+    name: string;
+    postal: string;
+    address: string;
+    phone: string;
+    payment: string;
+    credit: {
+      credit_num: string;
+      security_code: string;
+      expiry_month: string;
+      expiry_year: string;
+      times: string;
+    },
+    conveni: string;
+    timestamp: FieldValue;
+  };
+
+  const [userData, setUserData] = useState<userDataType>({
+    name: '',
+    postal: '',
+    address: '',
+    phone: '',
+    payment: '',
+    credit: {
+      credit_num: '',
+      security_code: '',
+      expiry_month: '',
+      expiry_year: '',
+      times: '',
+    },
+    conveni: '',
+    timestamp: serverTimestamp(),
+  });
+
+  useEffect (() => {
+    if(latestOrder) {
+      setUserData(latestOrder);
+    }
+  }, [latestOrder]);
+
 
   return(
     <SMainBox>
-      <PageTtl>お届け先 / お支払い方法入力・<br className='_pc-none'/>注文内容の確認</PageTtl>
+      <PageTtl>お届け先・お支払い方法</PageTtl>
       <SInner>
         <SCartBox onSubmit={handleSubmit}>
           <div className='warp_content'>
@@ -32,19 +113,47 @@ const OrderPage = () => {
               <div className='address'>
                 <label className='item'>
                   <span className='ttl_item'>お名前</span>
-                  <input className='input' type="text" name='name' required/>
+                  <input
+                    className='input'
+                    type="text"
+                    name='name'
+                    value={userData.name}
+                    onChange={e => setUserData({...userData, name: e.target.value})}
+                    required
+                  />
                 </label>
                 <label className='item'>
                   <span className='ttl_item'>郵便番号</span>
-                  <input className='input' type="text" name='postal' required/>
+                  <input
+                    className='input'
+                    type="text"
+                    name='postal'
+                    value={userData.postal}
+                    onChange={e => setUserData({...userData, postal: e.target.value})}
+                    required
+                  />
                 </label>
                 <label className='item'>
                   <span className='ttl_item'>住所</span>
-                  <input className='input' type="text" name='address' required/>
+                  <input
+                    className='input'
+                    type="text"
+                    name='address'
+                    value={userData.address}
+                    onChange={e => setUserData({...userData, address: e.target.value})}
+                    required
+                  />
                 </label>
                 <label className='item'>
                   <span className='ttl_item'>電話番号</span>
-                  <input className='input' type="text" name='phone' required/>
+                  <input
+                    className='input'
+                    type="text"
+                    name='phone'
+                    value={userData.phone}
+                    onChange={e => setUserData({...userData, phone: e.target.value})}
+                    required
+                  />
                 </label>
               </div>
             </div>
@@ -53,14 +162,32 @@ const OrderPage = () => {
               <div className='payment'>
                 <div className='item'>
                   <label className='label'>
-                    <input className='input_radio' type="radio" name='payment' value="credit" onChange={e => setPaymentSelect(e.target.value)}/>
+                    <input className='input_radio'
+                      type="radio"
+                      name='payment'
+                      value="credit"
+                      checked={userData.payment === 'credit'}
+                      onChange={e => setUserData(data => ({...data, payment: e.target.value}))}
+                    />
                     <span className='ttl_item'>クレジットカード</span>
                   </label>
-                  <SSubBox open={'credit' === paymentSelect}>
+                  <SSubBox open={'credit' === userData.payment}>
                     <div className='box credit'>
                       <label className='sub_item'>
                         <span className='sub_ttl_item'>カード番号</span>
-                        <input className='sub_input' type="text" name='credit_num'/>
+                        <input
+                          className='sub_input'
+                          type="text"
+                          name='credit_num'
+                          value={userData.credit.credit_num}
+                          onChange={e => setUserData(data => ({
+                            ...data,
+                            credit: {
+                              ...data.credit,
+                              credit_num: e.target.value
+                            }
+                          }))}
+                        />
                       </label>
                       <label className='sub_item'>
                         <span className='sub_ttl_item'>セキュリティコード</span>
@@ -122,16 +249,29 @@ const OrderPage = () => {
                 </div>
                 <div className='item'>
                   <label className='label'>
-                    <input className='input_radio' type="radio" name='payment' value="delivery" onChange={e => setPaymentSelect(e.target.value)}/>
+                    <input
+                      className='input_radio'
+                      type="radio"
+                      name='payment'
+                      value="delivery"
+                      checked={userData.payment === 'delivery'}
+                      onChange={e => setUserData(data => ({...data, payment: e.target.value}))}
+                    />
                     <span className='ttl_item'>代金引換<span className='small'>（手数料：¥330）</span></span>
                   </label>
                 </div>
                 <div className='item'>
                   <label className='label'>
-                    <input className='input_radio' type="radio" name='payment' value="conveni" onChange={e => setPaymentSelect(e.target.value)}/>
+                    <input className='input_radio'
+                      type="radio"
+                      name='payment'
+                      value="conveni"
+                      checked={userData.payment === 'conveni'}
+                      onChange={e => setUserData(data => ({...data, payment: e.target.value}))}
+                    />
                     <span className='ttl_item'>コンビニ<span className='small'>（手数料：¥330）</span></span>
                   </label>
-                  <SSubBox open={'conveni' === paymentSelect}>
+                  <SSubBox open={'conveni' === userData.payment}>
                     <div className='box conveni'>
                       <label className='sub_item'>
                         <input className='input_radio' type="radio" value='lawson' name='conveni'/>
@@ -158,30 +298,13 @@ const OrderPage = () => {
                 </div>
               </div>
             </div>
-            <div className='content'>
-              <h2 className='mini_ttl'>購入商品</h2>
-              <ul className='ul_cart'>
-                {cartItems.map(item => (
-                  <li key={item.id}>
-                    <img className='img' src={item.image} alt={item.name} />
-                    <div className='name'>
-                      <p>{item.name}</p>
-                      <p>数量：{item.quantity}</p>
-                    </div>
-                    <p className='price'>
-                    <p>¥{item.price}</p>
-                    </p>
-                  </li>
-                ))}
-              </ul>
-            </div>
           </div>
           <div className='confirm'>
             <div className='box_total'>
               <p>商品合計<span className='tax'>税込</span></p>
-              <p>¥{total}</p>
+              <p className='total'>¥{total}</p>
             </div>
-            <button className='btn' type='submit'>注文を確定する</button>
+            <button className='btn' type='submit'>次へ進む</button>
           </div>
         </SCartBox>
       </SInner>
@@ -189,7 +312,7 @@ const OrderPage = () => {
   );
 }
 
-export default OrderPage;
+export default SelectPage;
 
 const SMainBox = styled.div`
   ${media.sp`
@@ -328,6 +451,7 @@ const SCartBox = styled.form`
     .box_total {
       display: flex;
       justify-content: space-between;
+      align-items: center;
       font-size: 2.0rem;
       font-weight: 700;
       margin-bottom: 20px;
@@ -339,6 +463,9 @@ const SCartBox = styled.form`
         font-size: 60%;
         margin-left: 5px;
         font-weight: 500;
+      }
+      .total {
+        font-size: 120%;
       }
     }
     .btn {
