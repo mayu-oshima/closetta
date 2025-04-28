@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import { media } from './styles/media';
 import { SInner } from './styles/inner';
 import { Link, useLocation } from 'react-router-dom';
-import { signOut, User } from 'firebase/auth';
+import { signOut } from 'firebase/auth';
 import { useUser } from './providers/user';
 import { auth } from './firebase';
 import { useCart } from './providers/cart';
@@ -10,10 +10,9 @@ import { useCart } from './providers/cart';
 export const Header = () => {
   const { cartItems } = useCart();
   const cartNum = () => {
-    let num: number = 0;
-    cartItems.map(item => {
-      num += item.quantity;
-    })
+    const num = cartItems.reduce((acc, item) => {
+      return acc + item.quantity;
+    }, 0)
     let result: string = '';
     if(num > 9) {
       result = '9+';
@@ -23,12 +22,13 @@ export const Header = () => {
     return result;
   }
 
-  const user: User | null = useUser();
+  const { userAccount, setLatestOrder } = useUser();
 
   const location = useLocation();
 
   const logOut = () => {
     signOut(auth);
+    setLatestOrder(null);
     alert('ログアウトしました');
   }
 
@@ -40,9 +40,9 @@ export const Header = () => {
             <img src="/images/closetta_logo.png" alt="" />
           </Link>
           <div className='info'>
-            {user ? (
+            {userAccount ? (
               <>
-                <p className='user_name'>{user.email}様</p>
+                <p className='user_name'>{userAccount.email}様</p>
                 <button className='btn' onClick={logOut}>ログアウト</button>
               </>
             ) : (
@@ -54,7 +54,7 @@ export const Header = () => {
             <Link className='btn' to={'/cart/'}>
               <div className='cart'>
                 <p className='num'>{cartNum()}</p>
-                <img src='/images/icon_cart.png'/>
+                <img src='/images/icon_cart.png' alt='CLOSETTA'/>
               </div>
             </Link>
           </div>

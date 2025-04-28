@@ -1,4 +1,4 @@
-import {useState, FormEvent, useEffect} from 'react';
+import {FormEvent} from 'react';
 
 import styled, {css} from 'styled-components';
 import { media } from '../styles/media';
@@ -7,22 +7,15 @@ import { SInner } from '../styles/inner';
 import { useNavigate, Link } from 'react-router-dom';
 
 import { useCart } from '../providers/cart';
+import { useUser } from '../providers/user';
 
-import { auth, db } from '../firebase';
-import { collection, getDocs, orderBy, query, limit } from 'firebase/firestore';
 
 
 const ConfirmPage = () => {
-  type latestOrderType = {
-    name: string;
-    postal: string;
-    address: string;
-    phone: string;
-    payment: string;
-  };
-  const [latestOrder, setLatestOrder] = useState<latestOrderType | null>(null);
 
   const { cartItems, total, clearCart } = useCart();
+  const { latestOrder } = useUser();
+
   const navigate = useNavigate();
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
@@ -31,32 +24,6 @@ const ConfirmPage = () => {
     navigate('/thanks/');
   }
 
-  const user = auth.currentUser;
-  if(user) {
-    console.log(user.uid);
-  }
-
-
-  useEffect(() => {
-    const fetchOrders = async () => {
-      if(!user) return;
-
-      const ordersRef = collection(db, 'users', user.uid, 'orders');
-      const q = query(ordersRef, orderBy('timestamp', 'desc'), limit(1));
-      const snapshot = await getDocs(q);
-      console.log(snapshot);
-
-      //if(!snapshot.empty) {
-        const doc = snapshot.docs[0];
-        console.log('hello');
-        console.log(doc);
-
-        setLatestOrder(doc.data() as any);
-      //}
-    }
-
-    fetchOrders();
-  }, [user]);
 
 
   return(
@@ -165,6 +132,9 @@ const SLink = styled(Link)`
 const SButtonWrap = styled.div`
   text-align: center;
   margin-top: 40px;
+  ${media.sp`
+    margin-top: 30px;
+  `}
   ${SButton},${SLink} {
     display: inline-block;
     width: auto;
@@ -266,6 +236,9 @@ const SCartBox = styled.form`
         &:first-child {
           padding-top: 0;
         }
+        &:last-child {
+          padding-bottom: 0;
+        }
         &:nth-child(n+2) {
           border-top: 1px solid #555;
         }
@@ -299,7 +272,7 @@ const SCartBox = styled.form`
     ${media.sp`
       padding: 20px;
       margin-left: 0;
-      margin-top: 20px;
+      margin-top: 40px;
     `}
     .box_total {
       display: flex;
@@ -323,60 +296,6 @@ const SCartBox = styled.form`
       a {
         color: #fff;
         text-decoration: none;
-      }
-    }
-  }
-`;
-
-const SSubBox = styled.div<{open: boolean}>`
-  transition: all .4s ease;
-  max-height: ${props => props.open ? '1000px' : '0'};
-  opacity: ${props => props.open ? '1' : '0'};
-  overflow: hidden;
-  .box {
-    background-color: #555;
-    padding: 30px;
-    margin-top: 15px;
-    ${media.sp`
-      padding: 15px;
-      font-size: 1.3rem;
-    `}
-    .sub_item {
-      display: flex;
-      align-items: center;
-      &:nth-child(n+2) {
-        margin-top: 30px;
-        ${media.sp`
-          margin-top: 15px;
-        `}
-      }
-    }
-    &.credit {
-      .sub_ttl_item {
-        width: 170px;
-        margin-right: 10px;
-        ${media.sp`
-          width: 100px;
-          margin-right: 5px;
-        `}
-      }
-      .sub_input {
-        flex: 1;
-        &.expiry {
-          display: flex;
-          justify-content: space-between;
-          .item_expiry {
-            width: 48.5%;
-            display: flex;
-            align-items: center;
-            .expiry_select {
-              flex: 1;
-            }
-            .unit {
-              margin-left: 7px;
-            }
-          }
-        }
       }
     }
   }

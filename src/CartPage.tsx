@@ -2,12 +2,21 @@ import styled from 'styled-components';
 import { media } from './styles/media';
 import { SInner } from './styles/inner';
 
-import { Link } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
 
 import { useCart } from './providers/cart';
+import { useUser } from './providers/user';
+
+import { auth } from './firebase';
 
 const CartPage = () => {
 const { cartItems, removeFromCart, updateQuantity, total } = useCart();
+const { latestOrder } = useUser();
+const orderLink = latestOrder ? '/order/confirm.html' : '/order/select.html';
+
+const user = auth.currentUser;
+
+const location = useLocation();
 
   return(
     <SMainBox>
@@ -50,7 +59,11 @@ const { cartItems, removeFromCart, updateQuantity, total } = useCart();
                 </div>
               </div>
               <div className='tocash'>
-                <Link className='btn' to={'/order/select.html'}>レジへ進む</Link>
+                {user ? (
+                  <Link className='btn' to={orderLink}>レジへ進む</Link>
+                ) : (
+                  <Link className='btn' to={'/login/'} state={{from: location}}>ログイン</Link>
+                )}
                 <div className='continue'>
                   <Link to={'/'}>ショッピングを続ける</Link>
                 </div>
